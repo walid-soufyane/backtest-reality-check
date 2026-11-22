@@ -1,0 +1,32 @@
+name: Feature or new check
+description: Propose a new diagnostic, counterexample, metric, or improvement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What backtest pitfall or need does this address?
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Kind of check (if applicable)
+      options:
+        - Verified (tests a mechanical property of the inputs)
+        - Illustrative (measures a sensitivity / fragility)
+        - Not a check (metric, docs, tooling, other)
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: What would the API and output look like? What can it NOT detect?
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References (optional)
+      description: Papers, blog posts, or examples that motivate this.

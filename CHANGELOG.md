@@ -1,0 +1,12 @@
+# Changelog
+
+## 0.1.0 (2026-11-22)
+
+Initial release.
+
+- Deterministic synthetic multi-asset price generator with an optional planted AR(1) edge
+- Vectorized backtester with an explicit execution lag and linear transaction costs
+- Metrics: total return, CAGR, volatility, Sharpe, drawdown, hit rate
+- Verified checks: price data, signal alignment, execution lag, determinism, truncation invariance
+- Illustrative checks: cost sensitivity / break-even cost, lag sensitivity, selection bias on noise
+- Deliberately leaky example signals and a `brc demo` CLI

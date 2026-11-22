@@ -76,6 +76,21 @@ def leaky_full_sample_zscore(prices: pd.DataFrame, lookback: int = 20) -> pd.Dat
     return _normalize_gross(z.clip(-3, 3))
 
 
+def leaky_calendar_group_mean(prices: pd.DataFrame) -> pd.DataFrame:
+    """BROKEN ON PURPOSE: demeans returns by their calendar-month average.
+
+    ``groupby(month).transform("mean")`` gives every day in a month the
+    average of the *whole* month, including days that have not happened yet.
+    The same leak appears with weekly or quarterly groups, and with
+    ``resample(...).transform``.
+    """
+    daily = prices.pct_change(fill_method=None)
+    month = daily.index.to_period("M")
+    monthly_mean = daily.groupby(month).transform("mean")
+    signal = monthly_mean.sub(monthly_mean.mean(axis=1), axis=0)
+    return _normalize_gross(signal)
+
+
 HONEST_SIGNALS = {
     "cross_sectional_momentum": cross_sectional_momentum,
     "short_term_reversal": short_term_reversal,
@@ -86,4 +101,5 @@ LEAKY_SIGNALS = {
     "leaky_next_day_return": leaky_next_day_return,
     "leaky_centered_moving_average": leaky_centered_moving_average,
     "leaky_full_sample_zscore": leaky_full_sample_zscore,
+    "leaky_calendar_group_mean": leaky_calendar_group_mean,
 }

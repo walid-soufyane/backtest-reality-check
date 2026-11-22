@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- New deliberately leaky counterexample: `leaky_calendar_group_mean` (calendar-group averages that include future days).
+- `examples/compare_strategies.py`: one table comparing every honest and leaky strategy.
+- pre-commit hooks and Dependabot configuration.
+
 ## 0.1.0 (2026-11-22)
 
 Initial release.

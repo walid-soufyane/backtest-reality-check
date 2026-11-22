@@ -17,6 +17,7 @@ cd backtest-reality-check
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest
+pip install pre-commit && pre-commit install   # optional: lint/format automatically on commit
 ```
 
 ## Before opening a pull request

@@ -173,6 +173,7 @@ def check_truncation_invariance(
     n_cutoffs: int = 5,
     min_history: int = 100,
     atol: float = 1e-10,
+    warmup_cutoffs: Sequence[int] = (5, 10, 25, 50),
 ) -> CheckResult:
     """Detect signals whose past values depend on future price rows.
 
@@ -181,15 +182,23 @@ def check_truncation_invariance(
     cutoff must be identical in both runs. Any difference proves the function
     reads rows after the cutoff.
 
+    Both late cutoffs (from ``min_history`` onward) and a few early ones are
+    tested. The early cutoffs catch leaks confined to the warm-up period, such
+    as ``.bfill()`` after a rolling window, which are invisible if every cutoff
+    falls after the warm-up has been populated.
+
     This catches common leaks such as ``shift(-1)``, centered rolling windows,
-    and full-sample normalization. It cannot catch leaks that come from outside
-    ``prices`` (other data sources, globals, parameters chosen with hindsight).
+    full-sample normalization, and warm-up back-fill. It cannot catch leaks that
+    come from outside ``prices`` (other data sources, globals, parameters chosen
+    with hindsight).
     """
     n = len(prices)
     if n < min_history + 2:
         return CheckResult("truncation_invariance", "INFO", "verified", f"not enough rows (need > {min_history + 1})")
     full = signal_fn(prices)
-    cut_positions = np.unique(np.linspace(min_history, n - 2, n_cutoffs).astype(int))
+    late = np.unique(np.linspace(min_history, n - 2, n_cutoffs).astype(int))
+    early = np.array([c for c in warmup_cutoffs if 0 <= c <= n - 2 and c < min_history], dtype=int)
+    cut_positions = np.unique(np.concatenate([early, late]))
     failures = []
     worst = 0.0
     for pos in cut_positions:

@@ -35,6 +35,18 @@ def test_leaky_signals_fail_truncation(prices, name):
     assert res.details["failed_cutoffs"]
 
 
+def test_truncation_catches_warmup_bfill_leak(prices):
+    """A bfill on the warm-up rows borrows a later value; early cutoffs must expose it."""
+
+    def bfill_leak(p: pd.DataFrame) -> pd.DataFrame:
+        return p.pct_change(20, fill_method=None).bfill()
+
+    res = check_truncation_invariance(bfill_leak, prices)
+    assert res.status == "FAIL"
+    assert res.scope == "verified"
+    assert res.details["failed_cutoffs"]
+
+
 def test_truncation_needs_enough_history():
     short = generate_prices(n_days=50)
     assert check_truncation_invariance(HONEST_SIGNALS["cross_sectional_momentum"], short).status == "INFO"

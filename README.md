@@ -65,7 +65,7 @@ The tool keeps two kinds of check separate.
 
 ### What it does *not* do
 
-- It **cannot** detect every form of look-ahead. A PASS on `truncation_invariance` only rules out leaks that come from future rows of the `prices` you pass in. It cannot see leakage from other data (restated fundamentals, revised macro data, point-in-time index membership), from globals, or from parameters you chose after seeing the full sample. Known gap: a leak confined to the first few warm-up rows, such as `.bfill()` after a rolling window, currently passes because every cutoff falls after the warm-up period. This is tracked in [#2](https://github.com/Walid-Soufyane/backtest-reality-check/issues/2).
+- It **cannot** detect every form of look-ahead. A PASS on `truncation_invariance` only rules out leaks that come from future rows of the `prices` you pass in. It cannot see leakage from other data (restated fundamentals, revised macro data, point-in-time index membership), from globals, or from parameters you chose after seeing the full sample.
 - It does not detect survivorship bias in a universe you supply.
 - The cost model is linear. It has no market impact, spread, borrow, or financing.
 - The synthetic data is a controlled lab and is not a realistic market model.
@@ -108,7 +108,7 @@ print(report.to_text())
 The report lists every assumption, the headline metrics net of costs, and one line per check:
 
 ```
-[PASS] (verified) truncation_invariance: past values unchanged at 5 truncation cutoffs (rules out leaks from future price rows only)
+[PASS] (verified) truncation_invariance: past values unchanged at 9 truncation cutoffs (rules out leaks from future price rows only)
 [WARN] (illustrative) cost_sensitivity: no positive gross edge even before costs
 ```
 
